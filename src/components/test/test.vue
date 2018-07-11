@@ -4,7 +4,10 @@
       <slide-page-wrapper>
         <slide-page-item v-for="(item,index) in 4" :key="index">
           <div class="item">
-            {{index}}
+            <ul>
+              <li>test is {{item}}</li>
+              <li v-for="(i,n) in 10" :key="n">{{i}}</li>
+            </ul>
           </div>
         </slide-page-item>
       </slide-page-wrapper>
@@ -35,8 +38,21 @@
   @r: 1rem/75;
   .item {
     width: 100%;
-    height: 200*@r;
     background: #68ffa3;
+    li{
+      display: block;
+      width: 100%;
+      height: 200*@r;
+      line-height: 200*@r;
+      text-align: center;
+      background: pink;
+      margin: 20*@r 0;
+      &:first-child{
+        font-size: 40*@r;
+        color: #ffffff;
+        text-align: center;
+      }
+    }
     &:nth-child(2){
       background: #4ff5ff;
     }
