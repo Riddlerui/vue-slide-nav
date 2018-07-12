@@ -20,10 +20,10 @@
   export default {
     name: 'slide-page-wrapper',
 
-    props:{
-      defaultIndex:{
-        type:Number,
-        default:0
+    props: {
+      defaultIndex: {
+        type: Number,
+        default: 0
       }
     },
 
@@ -38,10 +38,12 @@
         offsetYNum: '',  // 初始偏移Y
         differX: 0,  // X差值
         differY: 0,  // Y差值
+        nowY: 0, // 记录当前Y值
         isLeft: true,  // 默认左划
         activeIndex: this.defaultIndex,  // 当前显示的页面
         allPageNumber: 0,  // 所有的page-item页面个数
         angle: 0,  // 角度
+        touchMoveType: false, // 是否为手动滑动的
       }
     },
     mounted() {
@@ -61,6 +63,7 @@
     },
     methods: {
       pageTouchStart(ev) {
+
         let dom = ev.changedTouches[0];
         // 获取初始值
         this.startPageX = dom.pageX;
@@ -73,7 +76,15 @@
         if (transfrom !== "undefined" && transfrom !== '') {
           let translateArr = transfrom.match(/\(([^)]*)\)/)[1].split(',');
           this.offsetX = translateArr[0];
-          this.offsetXNum = Number(translateArr[0].split('px')[0]);
+          if (translateArr[0].split('px').length > 1) {
+            // px
+            this.offsetXNum = Number(translateArr[0].split('px')[0]);
+          } else {
+            //rem
+            console.log(Number(translateArr[0].split('rem')[0]) * WINDOW_WIDTH);
+            this.offsetXNum = Number(translateArr[0].split('rem')[0]) * WINDOW_WIDTH;
+          }
+
           this.offsetY = translateArr[1];
           this.offsetY = Number(translateArr[1].split('px')[0]);
 
@@ -91,6 +102,7 @@
         pageWrapper.style.transition = 'none';
 
         let dom = ev.changedTouches[0];
+        this.nowY = dom.pageY;
         // 判断滑动方向
         if (this.startPageX > dom.pageX) {
           // 右划
@@ -136,7 +148,8 @@
           pageWrapper.style.transform = `translate(${this.offsetXNum ? (-Number(this.activeIndex) * WINDOW_WIDTH + -this.differX) / this.htmlFontSize : -this.differX / this.htmlFontSize}rem,0)`
 
         } else {
-          if (this.angle > 30 && this.angle < 40) {
+          // 限制 从下往右上斜着划
+          if (!(this.angle > 0 && this.angle < 80)) {
             pageWrapper.style.transform = `translate(${this.offsetXNum ? (-Number(this.activeIndex) * WINDOW_WIDTH + -this.differX) / this.htmlFontSize : -this.differX / this.htmlFontSize}rem,0)`
           } else {
             pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`
@@ -149,7 +162,8 @@
         // 开启动画
         pageWrapper.style.transition = 'transform 300ms ease-in-out';
 
-        if (!this.angle > 40) {
+
+        if ((this.angle > 0 && this.angle < 80)) {
           pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`;
           return;
         }
@@ -178,10 +192,20 @@
       },
 
       // 当前显示页发生改变后就暴露出去
-      changeIndex(index){
-        this.$emit("changeIndex",index);
+      changeIndex(index) {
+        this.$emit("changeIndex", index);
+      },
+      changePageWrapperTransform(index) {
+        let pageWrapper = this.$refs.pageWrapper;
+        pageWrapper.style.transition = 'transform 300ms ease-in-out';
+        pageWrapper.style.transform = `translate(${-index * WINDOW_WIDTH / this.htmlFontSize}rem,0)`
       }
-
+    },
+    watch: {
+      defaultIndex(newVal) {
+        this.activeIndex = newVal;
+        this.changePageWrapperTransform(newVal)
+      }
     }
   }
 </script>

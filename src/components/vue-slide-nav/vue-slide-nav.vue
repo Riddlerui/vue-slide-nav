@@ -66,7 +66,6 @@
         this.$refs.activeLine.style.width = `${Math.floor(this.allLiTag[index].offsetWidth)/this.htmlFontSize}rem`;
       },
       setActiveLineLeftVal(index){
-        console.log(index);
         let leftVal = 0;
         for (let i = 0; i < index; i++) {
           leftVal +=Number(this.allLiTag[i].offsetWidth);

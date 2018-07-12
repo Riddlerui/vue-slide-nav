@@ -5,6 +5,7 @@
         :default-index="activeIndex"
         :active-animation="activeAnimation"
         :fixed-nav="fixedNav"
+        @navChangeIndex="changeIndex"
     >
       <slide-page-wrapper
           :default-index="activeIndex"
@@ -40,7 +41,7 @@
     methods: {
       changeIndex(index) {
         this.activeIndex = index;
-      }
+      },
     },
     components: {
       "vue-slide-nav": vueSlideNav,
