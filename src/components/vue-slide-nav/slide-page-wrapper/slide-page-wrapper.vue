@@ -33,6 +33,7 @@
         isLeft: true,  // 默认左划
         activeIndex: 0,  // 当前显示的页面
         allPageNumber: 0,  // 所有的page-item页面个数
+        angle: 0,  // 角度
       }
     },
     mounted() {
@@ -82,8 +83,6 @@
         pageWrapper.style.transition = 'none';
 
         let dom = ev.changedTouches[0];
-
-
         // 判断滑动方向
         if (this.startPageX > dom.pageX) {
           // 右划
@@ -100,23 +99,40 @@
           // 设置滑动方向
           this.isLeft = true;
         }
-        // 当滑动距离 X>Y的时候才赋值 一旦X<Y就直接改为初始偏移
-        if (Math.abs(this.differX) / 100 > Math.abs(this.differY) / 100) {
 
-          // 判断是否为最后一个或者第一个分别执行不同的代码
-          if (Number(this.activeIndex) + 1 === this.allPageNumber) {
-            // 判断方向
-            if (!this.isLeft) {
-              this.differX = this.differX / 5;
-            }
-          } else if (Number(this.activeIndex) === 0) {
-            if (this.isLeft) {
-              this.differX = this.differX / 5;
-            }
+
+        // 计算角度
+        let x = Math.abs(this.startPageX - dom.pageX);
+        let y = Math.abs(this.startPageY - dom.pageY);
+        let z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+        // 计算弧度
+        let radina = Math.acos(y / z);
+        this.angle = Math.floor(180 / (Math.PI / radina));
+
+
+        // 当滑动距离 X>Y的时候才赋值 一旦X<Y就直接改为初始偏移
+        //Math.abs(this.differX) / 100 > Math.abs(this.differY) / 100
+
+        // 判断是否为最后一个或者是第一个
+        if (Number(this.activeIndex) + 1 === this.allPageNumber) {
+          // 判断方向
+          if (!this.isLeft) {
+            this.differX = this.differX / 5;
           }
           pageWrapper.style.transform = `translate(${this.offsetXNum ? (-Number(this.activeIndex) * WINDOW_WIDTH + -this.differX) / this.htmlFontSize : -this.differX / this.htmlFontSize}rem,0)`
+        } else if (Number(this.activeIndex) === 0) {
+          if (this.isLeft) {
+            this.differX = this.differX / 5;
+          }
+          pageWrapper.style.transform = `translate(${this.offsetXNum ? (-Number(this.activeIndex) * WINDOW_WIDTH + -this.differX) / this.htmlFontSize : -this.differX / this.htmlFontSize}rem,0)`
+
         } else {
-          pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`
+          if (this.angle > 30 && this.angle < 40) {
+            pageWrapper.style.transform = `translate(${this.offsetXNum ? (-Number(this.activeIndex) * WINDOW_WIDTH + -this.differX) / this.htmlFontSize : -this.differX / this.htmlFontSize}rem,0)`
+          } else {
+            pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`
+          }
         }
       },
       pageTouchEnd(ev) {
@@ -124,8 +140,8 @@
         // 开启动画
         pageWrapper.style.transition = 'transform 300ms ease-in-out';
 
-
-        if (Math.abs(this.differX) < 70) {
+        console.log(this.angle)
+        if (!this.angle > 40) {
           pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`;
           return;
         }
