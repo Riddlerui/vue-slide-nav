@@ -1,7 +1,15 @@
 <template>
   <div class="content">
-    <vue-slide-nav :navList="arr">
-      <slide-page-wrapper>
+    <vue-slide-nav
+        :navList="arr"
+        :default-index="activeIndex"
+        :active-animation="activeAnimation"
+        :fixed-nav="fixedNav"
+    >
+      <slide-page-wrapper
+          :default-index="activeIndex"
+          @changeIndex="changeIndex"
+      >
         <slide-page-item v-for="(item,index) in 4" :key="index">
           <div class="item">
             <ul>
@@ -23,13 +31,21 @@
   export default {
     data() {
       return {
-        arr: ['导航1', '导航2', '导航3', '导航4']
+        arr: ['导航1', '导航2', '导航3', '导航4'],
+        activeIndex: 0,
+        fixedNav:true,
+        activeAnimation:true,
+      }
+    },
+    methods: {
+      changeIndex(index) {
+        this.activeIndex = index;
       }
     },
     components: {
       "vue-slide-nav": vueSlideNav,
       "slide-page-wrapper": slidePageWrapper,
-      "slide-page-item":slidePageItem
+      "slide-page-item": slidePageItem
     }
   }
 </script>
@@ -39,7 +55,7 @@
   .item {
     width: 100%;
     background: #68ffa3;
-    li{
+    li {
       display: block;
       width: 100%;
       height: 200*@r;
@@ -47,19 +63,19 @@
       text-align: center;
       background: pink;
       margin: 20*@r 0;
-      &:first-child{
+      &:first-child {
         font-size: 40*@r;
         color: #ffffff;
         text-align: center;
       }
     }
-    &:nth-child(2){
+    &:nth-child(2) {
       background: #4ff5ff;
     }
-    &:nth-child(3){
+    &:nth-child(3) {
       background: #5882ff;
     }
-    &:nth-child(4){
+    &:nth-child(4) {
       background: #d049ff;
     }
   }

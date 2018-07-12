@@ -2,21 +2,48 @@
 .vue-slide-nav-wrapper{
   width: 100%;
   height: auto;
-  .nav-list-wrapper{
-    display: flex;
-    width: 100%;
-    align-items: center;
-    .nav-item{
-      flex: 1;
-      text-align: center;
-      height: 88*@r;
-      line-height: 88*@r;
-      font-size: 28*@r;
-      background: #FFC4CF;
-      color: #ffffff;
-      &.on{
-        .line(2px,#EF6680)
+  .nav-wrapper{
+    position: relative;
+    &.fixed{
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 9999;
+    }
+    .nav-list-wrapper{
+      display: flex;
+      width: 100%;
+      align-items: center;
+      .nav-item{
+        position: relative;
+        box-sizing: border-box;
+        flex: 1;
+        text-align: center;
+        height: 88*@r;
+        line-height: 88*@r;
+        font-size: 28*@r;
+        background: #FFC4CF;
+        color: #ffffff;
+        i{
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          .line(2px,#EF6680)
+        }
+        &.on{
+          .line(2px,#EF6680)
+        }
       }
+    }
+    .active-line{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      .line(2px,#EF6680);
+      z-index: 99;
+      transition: transform .3s linear;
     }
   }
 }

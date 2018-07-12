@@ -19,6 +19,14 @@
 
   export default {
     name: 'slide-page-wrapper',
+
+    props:{
+      defaultIndex:{
+        type:Number,
+        default:0
+      }
+    },
+
     data() {
       return {
         startPageX: 0, // 初始鼠标X轴位置
@@ -31,7 +39,7 @@
         differX: 0,  // X差值
         differY: 0,  // Y差值
         isLeft: true,  // 默认左划
-        activeIndex: 0,  // 当前显示的页面
+        activeIndex: this.defaultIndex,  // 当前显示的页面
         allPageNumber: 0,  // 所有的page-item页面个数
         angle: 0,  // 角度
       }
@@ -135,12 +143,12 @@
           }
         }
       },
+
       pageTouchEnd(ev) {
         let pageWrapper = this.$refs.pageWrapper;
         // 开启动画
         pageWrapper.style.transition = 'transform 300ms ease-in-out';
 
-        console.log(this.angle)
         if (!this.angle > 40) {
           pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`;
           return;
@@ -154,20 +162,26 @@
               return;
             }
             this.activeIndex--;
-
-            pageWrapper.style.transform = `translate(${-this.activeIndex * WINDOW_WIDTH}px,0)`;
           } else {
             // 右划
             this.activeIndex++;
             // 右划限定最大值为page-item的长度
             this.activeIndex = this.activeIndex + 1 >= this.allPageNumber ? this.allPageNumber - 1 : this.activeIndex;
-
-            pageWrapper.style.transform = `translate(${-this.activeIndex * WINDOW_WIDTH}px,0)`;
           }
+          pageWrapper.style.transform = `translate(${-this.activeIndex * WINDOW_WIDTH}px,0)`;
+
+          // 下标改变后返回给父组件
+          this.changeIndex(this.activeIndex);
         } else {
           pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`
         }
       },
+
+      // 当前显示页发生改变后就暴露出去
+      changeIndex(index){
+        this.$emit("changeIndex",index);
+      }
+
     }
   }
 </script>
