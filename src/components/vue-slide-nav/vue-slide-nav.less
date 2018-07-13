@@ -4,23 +4,27 @@
   height: auto;
   .nav-wrapper{
     position: relative;
+    width: 100%;
+    //overflow: hidden;
     &.fixed{
       position: fixed;
-      top: 0;
       width: 100%;
       z-index: 9999;
     }
     .nav-list-wrapper{
-      display: flex;
       width: 100%;
-      align-items: center;
+      &.flex{
+        display: flex;
+        align-items: center;
+        .nav-item{
+          flex: 1;
+        }
+      }
       .nav-item{
+        float: left;
         position: relative;
         box-sizing: border-box;
-        flex: 1;
         text-align: center;
-        height: 88*@r;
-        line-height: 88*@r;
         font-size: 28*@r;
         background: #FFC4CF;
         color: #ffffff;

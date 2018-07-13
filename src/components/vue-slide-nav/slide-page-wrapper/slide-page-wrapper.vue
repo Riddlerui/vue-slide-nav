@@ -81,7 +81,6 @@
             this.offsetXNum = Number(translateArr[0].split('px')[0]);
           } else {
             //rem
-            console.log(Number(translateArr[0].split('rem')[0]) * WINDOW_WIDTH);
             this.offsetXNum = Number(translateArr[0].split('rem')[0]) * WINDOW_WIDTH;
           }
 
