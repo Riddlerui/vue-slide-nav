@@ -1,7 +1,14 @@
+<!--suppress ALL -->
 <template>
   <div class="vue-slide-nav-wrapper" ref="vueSlideNavWrapper">
 
-    <div class="nav-wrapper" ref="navWrapper" :class="fixedNav?'fixed':''">
+    <div class="nav-wrapper"
+         ref="navWrapper"
+         :class="fixedNav?'fixed':''"
+         @touchstart="navTouchStart($event)"
+         @touchmove="navTouchMove($event)"
+         @touchend="navTouchEnd($event)"
+    >
       <ul
           class="nav-list-wrapper"
           ref="navListWrapper"
@@ -29,8 +36,8 @@
           {{item}}
           <i v-show="activeIndex === index && !activeAnimation" :style="{background:activeLine}"></i>
         </li>
+        <p class="active-line" ref="activeLine" v-show="activeAnimation" :style="{background:activeLine}"></p>
       </ul>
-      <p class="active-line" ref="activeLine" v-show="activeAnimation" :style="{background:activeLine}"></p>
     </div>
     <slot/>
   </div>
@@ -112,6 +119,11 @@
         activeIndex: this.defaultIndex,
         allLiTag: 0,  // 所有的导航节点数量
         htmlFontSize: 0, // html的字体大小
+        startX: 0, // 按下的时候X轴位置
+        differX: 0,  // 差值
+        defaultX: 0, // 默认值
+        bounce: 0.1, // 弹力
+
       }
     },
     mounted() {
@@ -125,6 +137,7 @@
       });
     },
     methods: {
+      // 设置ul的宽度
       setNavlistWrapperWidth() {
         if (!this.navMove) {
           return false;
@@ -166,7 +179,6 @@
         }
         this.$refs.activeLine.style.transform = `translateX(${leftVal / this.htmlFontSize}rem)`;
       },
-
       // 点击切换盗导航事件
       changeIndex(index) {
         this.setDefaultActiveLine(index);
@@ -193,7 +205,71 @@
           }
         }
 
+      },
+
+
+      setNavListWrapperTransform(px) {
+        this.$refs.navListWrapper.style.transform = `translateX(${px / this.htmlFontSize }rem)`;
+      },
+
+      navTouchStart($ev) {
+        let dom = $ev.changedTouches[0];
+        this.startX = dom.pageX;
+        let transfrom = this.$refs.navListWrapper.style.transform;
+
+
+        // 获取实际导航宽度
+        let navListWrapperWidth = this.$refs.navListWrapper.offsetWidth;
+        // 获取屏幕宽度
+        let windowWidth = document.body.offsetWidth;
+
+        // 获取实际导航宽度和屏幕宽度的差值
+        this.differWidth = navListWrapperWidth - windowWidth;
+
+        if (transfrom !== 'undefined' && transfrom !== '') {
+          let translateXArr = transfrom.match(/\(([^)]*)\)/)[1].split('rem');
+          this.defaultX = Number(translateXArr[0]) * this.htmlFontSize;
+        } else {
+          this.defaultX = 0;
+        }
+      },
+      navTouchMove($ev) {
+        this.$refs.navListWrapper.style.transition = 'none';
+        let dom = $ev.changedTouches[0];
+        if (dom.pageX > this.startX) {
+          // 往右划
+          this.differX = this.defaultX + (dom.pageX - this.startX);
+          if (this.differX > 0) {
+            this.differX = Math.abs(dom.pageX - this.startX) * this.bounce;
+            console.log(this.differX)
+          }
+        } else {
+          // 往左划
+          this.differX = this.defaultX + -(this.startX - dom.pageX);
+
+          if (Math.abs(this.differX) >= this.differWidth) {
+            this.differX = this.differX + (Math.abs(this.differX) - this.differWidth) * this.bounce * 8;
+
+
+          }
+        }
+
+
+        this.setNavListWrapperTransform(this.differX);
+      },
+      navTouchEnd($ev) {
+        this.$refs.navListWrapper.style.transition = 'transform 300ms ease-in-out';
+
+        // 限制最大最小值
+        this.differX = this.differX >= 0 ?
+            0 : Math.abs(this.differX) <= this.differWidth ?
+                this.differX : -this.differWidth;
+
+
+        this.setNavListWrapperTransform(this.differX);
+
       }
+
     },
     watch: {
       defaultIndex(newVal) {
