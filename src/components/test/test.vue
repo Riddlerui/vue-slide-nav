@@ -10,6 +10,12 @@
         :height="height"
         :width="width"
         :LRPadding="LRPadding"
+        :font-size="fontSize"
+        :font-color="fontColor"
+        :active-font-color="activeFontColor"
+        :nav-background="navBackground"
+        :nav-active-background="navActiveBackground"
+        :active-line="activeLine"
         @navChangeIndex="changeIndex"
     >
       <slide-page-wrapper
@@ -46,6 +52,12 @@
         height:44,
         width:100,
         LRPadding:0,
+        fontSize:14,
+        fontColor:'#fff',
+        activeFontColor:"#fff",
+        navBackground:'#FFC4CF',
+        navActiveBackground:'#FFC4CF',
+        activeLine:'#EF6680'
       }
     },
     methods: {

@@ -23,3 +23,13 @@ navMove | 开启滚动导航 | false    | Boolean
 height | 导航item的高度   | 44 (px)   | Number
 width | 导航item的宽度 当存在LRPadding的时候会被替代掉 |100(px)|Number
 LRPadding | 导航item的左右内边距，当存在此属性的时候width会被替代掉 | 0(px) | Number
+fontSize | 导航字体大小| 14(px) | Number
+fontColor | 导航字体颜色 | #fff | String
+activeFontColor | 选中的导航字体颜色 | #fff | String
+navBackground| 导航的背景颜色 | #FFC4CF | String
+navActiveBackground | 选中的导航背景颜色 | #FFC4CF | String
+activeLine | 选中的时候下面的线的颜色 | #EF6680 | String
+
+
+
+

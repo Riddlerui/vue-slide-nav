@@ -19,15 +19,18 @@
             lineHeight:height/htmlFontSize+'rem',
             width:LRPadding !==0?0:width/htmlFontSize+'rem',
             paddingLeft: LRPadding/htmlFontSize+'rem',
-            paddingRight: LRPadding/htmlFontSize+'rem'
+            paddingRight: LRPadding/htmlFontSize+'rem',
+            fontSize:fontSize/htmlFontSize+'rem',
+            color:activeIndex===index?activeFontColor:fontColor,
+            background:activeIndex===index?navActiveBackground:navBackground,
             }"
             @click="changeIndex(index)"
         >
           {{item}}
-          <i v-show="activeIndex === index && !activeAnimation"></i>
+          <i v-show="activeIndex === index && !activeAnimation" :style="{background:activeLine}"></i>
         </li>
       </ul>
-      <p class="active-line" ref="activeLine" v-show="activeAnimation"></p>
+      <p class="active-line" ref="activeLine" v-show="activeAnimation" :style="{background:activeLine}"></p>
     </div>
     <slot/>
   </div>
@@ -71,13 +74,37 @@
         type: Number,
         default: 44
       },
-      width:{
-        type:Number,
-        default:100,
+      width: {
+        type: Number,
+        default: 100,
       },
-      LRPadding :{
-        type:Number,
-        default : 0,
+      LRPadding: {
+        type: Number,
+        default: 0,
+      },
+      fontSize: {
+        type: Number,
+        default: 14
+      },
+      fontColor: {
+        type: String,
+        default: '#fff'
+      },
+      activeFontColor: {
+        type: String,
+        default: "#fff"
+      },
+      navBackground: {
+        type: String,
+        default: '#FFC4CF'
+      },
+      navActiveBackground: {
+        type: String,
+        default: '#FFC4CF'
+      },
+      activeLine: {
+        type: String,
+        default: '#EF6680'
       }
     },
     data() {
@@ -99,8 +126,8 @@
     },
     methods: {
       setNavlistWrapperWidth() {
-        if (!this.navMove){
-            return false;
+        if (!this.navMove) {
+          return false;
         }
         let width = 0;
         let navList = this.$refs.navListWrapper.getElementsByTagName('li');
