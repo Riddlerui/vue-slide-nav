@@ -226,6 +226,7 @@
       },
 
       navTouchStart($ev) {
+        this.isMove = false;
         let dom = $ev.changedTouches[0];
         this.startX = dom.pageX;
         let transfrom = this.$refs.navListWrapper.style.transform;
@@ -279,6 +280,7 @@
         if (!this.isMove){
             return;
         }
+        console.log(this.isMove)
         // 计算最终值
         if (this.differX < 0) {
           // 如果是右往左划 differX就是负数 那么最终值就是differX - 偏移量乘以系数 反之就+
@@ -295,7 +297,6 @@
         } else {
           this.finalX = this.differX + this.moveDistance * 0.2;
         }
-
         this.move(this.differX, this.finalX)
 
       },
