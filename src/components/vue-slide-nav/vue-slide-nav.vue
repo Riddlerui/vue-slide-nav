@@ -247,6 +247,7 @@
         }
       },
       navTouchMove($ev) {
+        this.$refs.navListWrapper.style.transition = 'none';
         this.isMove = true; // 滑动了
         let dom = $ev.changedTouches[0];
         this.moveDistance = Math.abs(this.startX - dom.pageX);  // 设置滑动的距离
@@ -310,6 +311,7 @@
           // console.log('左往右')
 
           if (sVal >= 0) {
+            this.$refs.navListWrapper.style.transition = 'transform 300ms ease-in-out';
             this.setNavListWrapperTransform(0);
             cancelAnimationFrame(this.timerTouch);
             return;
@@ -331,6 +333,7 @@
             // 限制最大值不超过整个导航容器的宽度
 
             if ((sVal <= -this.differWidth)) {
+              this.$refs.navListWrapper.style.transition = 'transform 300ms ease-in-out';
               this.setNavListWrapperTransform(-this.differWidth);
               cancelAnimationFrame(this.timerTouch);
               return;
