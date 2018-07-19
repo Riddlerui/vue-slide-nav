@@ -133,6 +133,9 @@
         bounce: 0.1, // 弹力
         moveDistance: 0, // 滑动的距离
         finalX: 0, // 最终的位置
+        moveDirection: null,// 滑动方向
+        speed: 1,  // 滑动速度
+        isMove:false, // 是否滑动了 如果没有滑动就不能执行缓动的动画
 
       }
     },
@@ -244,11 +247,12 @@
         }
       },
       navTouchMove($ev) {
-        this.$refs.navListWrapper.style.transition = 'none';
+        this.isMove = true; // 滑动了
         let dom = $ev.changedTouches[0];
         this.moveDistance = Math.abs(this.startX - dom.pageX);  // 设置滑动的距离
         if (dom.pageX > this.startX) {
-          // 往右划
+          this.moveDirection = true;
+          // 左往右
           this.differX = this.defaultX + (dom.pageX - this.startX);
 
           // 划到底动画计算
@@ -256,7 +260,8 @@
             this.differX = Math.abs(dom.pageX - this.startX) * this.bounce;
           }
         } else {
-          // 往左划
+          this.moveDirection = false;
+          // 右往左
           this.differX = this.defaultX + -(this.startX - dom.pageX);
 
 
@@ -270,23 +275,74 @@
         this.setNavListWrapperTransform(this.differX);
       },
       navTouchEnd($ev) {
-        this.$refs.navListWrapper.style.transition = 'transform 300ms ease-in-out';
+        if (!this.isMove){
+            return;
+        }
+        // 计算最终值
+        if (this.differX < 0) {
+          // 如果是右往左划 differX就是负数 那么最终值就是differX - 偏移量乘以系数 反之就+
 
-        // 限制最大最小值
-        this.differX = this.differX >= 0 ?
-            0 : Math.abs(this.differX) <= this.differWidth ?
-                this.differX : -this.differWidth;
+          // 判断方向，左往右的+ 右往左的—
+          if (this.moveDirection) {
+            this.finalX = this.differX + this.moveDistance * 0.2;
+          } else {
+            this.finalX = this.differX - this.moveDistance * 0.2;
+          }
 
-        // console.log(this.differX, -this.moveDistance);
+        } else if (this.differX === 0) {
+          this.finalX = 0;
+        } else {
+          this.finalX = this.differX + this.moveDistance * 0.2;
+        }
 
-         this.setNavListWrapperTransform(this.differX);
+        this.move(this.differX, this.finalX)
+
       },
       /**
        *
        * @param sVal  初始值
-       * @param tVal  目标值
+       * @param cVal  最终值
        */
-      move(sVal, tVal) {
+      move(sVal, cVal) {
+
+        // 判断方向
+        if (this.moveDirection) {
+          // console.log('左往右')
+
+          if (sVal >= 0) {
+            this.setNavListWrapperTransform(0);
+            cancelAnimationFrame(this.timerTouch);
+            return;
+          }
+          if (sVal <= cVal) {
+            sVal += this.speed;
+            this.setNavListWrapperTransform(sVal);
+            this.timerTouch = requestAnimationFrame(this.move.bind(this, sVal, cVal))
+          } else {
+            cancelAnimationFrame(this.timerTouch)
+          }
+
+        } else {
+          // console.log('右往左')
+
+          // 没有达到最终值的时候 动画执行 达到了取消动画
+          if (!(sVal <= cVal)) {
+            sVal -= this.speed;
+            // 限制最大值不超过整个导航容器的宽度
+
+            if ((sVal <= -this.differWidth)) {
+              this.setNavListWrapperTransform(-this.differWidth);
+              cancelAnimationFrame(this.timerTouch);
+              return;
+            }
+            this.setNavListWrapperTransform(sVal);
+            this.timerTouch = requestAnimationFrame(this.move.bind(this, sVal, cVal))
+
+          } else {
+            cancelAnimationFrame(this.timerTouch)
+          }
+
+        }
 
       }
 
@@ -296,7 +352,7 @@
         this.nowIndexChange(newVal);
       },
       fixedNav(newVal) {
-        this.fixedNavDom(newVal)
+        this.fixedNavDom(newVal);
       }
     }
   }
