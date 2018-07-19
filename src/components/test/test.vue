@@ -22,7 +22,7 @@
           :default-index="activeIndex"
           @changeIndex="changeIndex"
       >
-        <slide-page-item v-for="(item,index) in 8" :key="index">
+        <slide-page-item v-for="(item,index) in 14" :key="index">
           <div class="item">
             <ul>
               <li>test is {{item}}</li>
@@ -42,7 +42,7 @@
   export default {
     data() {
       return {
-        arr: ['导航1', '导航2', '导航3', '导航4', '导航5', '导航6', '导航7', '导航8'],
+        arr: ['导航1', '导航2', '导航3', '导航4', '导航5', '导航6', '导航7', '导航8', '导航9', '导航10', '导航11', '导航12', '导航13', '导航14'],
         activeIndex: 0,
         fixedNav:true,
         activeAnimation:true,

@@ -134,8 +134,7 @@
         moveDistance: 0, // 滑动的距离
         finalX: 0, // 最终的位置
         moveDirection: null,// 滑动方向
-        speed: 1,  // 滑动速度
-        isMove:false, // 是否滑动了 如果没有滑动就不能执行缓动的动画
+        isMove: false, // 是否滑动了 如果没有滑动就不能执行缓动的动画
 
       }
     },
@@ -231,6 +230,8 @@
         this.startX = dom.pageX;
         let transfrom = this.$refs.navListWrapper.style.transform;
 
+        this.timerTouch && cancelAnimationFrame(this.timerTouch)
+
 
         // 获取实际导航宽度
         let navListWrapperWidth = this.$refs.navListWrapper.offsetWidth;
@@ -277,8 +278,8 @@
         this.setNavListWrapperTransform(this.differX);
       },
       navTouchEnd($ev) {
-        if (!this.isMove){
-            return;
+        if (!this.isMove) {
+          return;
         }
         console.log(this.isMove)
         // 计算最终值
@@ -287,15 +288,15 @@
 
           // 判断方向，左往右的+ 右往左的—
           if (this.moveDirection) {
-            this.finalX = this.differX + this.moveDistance * 0.2;
+            this.finalX = this.differX + this.moveDistance ;
           } else {
-            this.finalX = this.differX - this.moveDistance * 0.2;
+            this.finalX = this.differX - this.moveDistance;
           }
 
         } else if (this.differX === 0) {
           this.finalX = 0;
         } else {
-          this.finalX = this.differX + this.moveDistance * 0.2;
+          this.finalX = this.differX + this.moveDistance;
         }
         this.move(this.differX, this.finalX)
 
@@ -318,7 +319,8 @@
             return;
           }
           if (sVal <= cVal) {
-            sVal += this.speed;
+            sVal += this.moveDistance*0.4*0.12;
+            console.log(sVal)
             this.setNavListWrapperTransform(sVal);
             this.timerTouch = requestAnimationFrame(this.move.bind(this, sVal, cVal))
           } else {
@@ -330,7 +332,7 @@
 
           // 没有达到最终值的时候 动画执行 达到了取消动画
           if (!(sVal <= cVal)) {
-            sVal -= this.speed;
+            sVal -=this.moveDistance*0.4*0.12;
             // 限制最大值不超过整个导航容器的宽度
 
             if ((sVal <= -this.differWidth)) {

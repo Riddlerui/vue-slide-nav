@@ -162,7 +162,7 @@
         pageWrapper.style.transition = 'transform 300ms ease-in-out';
 
 
-        if ((this.angle > 0 && this.angle < 80)) {
+        if ((this.angle > 0 && this.angle < 70)) {
           pageWrapper.style.transform = `translate(${this.offsetX},${this.offsetY})`;
           return;
         }
