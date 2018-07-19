@@ -46,6 +46,14 @@
 <script>
   import {fixedClone} from '../utils/utils'
 
+  const MOVE_TIME = 2000; // 滑动后的动画时间
+
+  window.requestAnimationFrame = window.requestAnimationFrame || function (a) {
+    return setTimeout(a, 1000 / 60)
+  };
+  window.cancelAnimationFrame = window.cancelAnimationFrame || clearTimeout;
+
+
   export default {
     name: "vue-slide-nav",
     props: {
@@ -123,6 +131,8 @@
         differX: 0,  // 差值
         defaultX: 0, // 默认值
         bounce: 0.1, // 弹力
+        moveDistance: 0, // 滑动的距离
+        finalX: 0, // 最终的位置
 
       }
     },
@@ -236,21 +246,23 @@
       navTouchMove($ev) {
         this.$refs.navListWrapper.style.transition = 'none';
         let dom = $ev.changedTouches[0];
+        this.moveDistance = Math.abs(this.startX - dom.pageX);  // 设置滑动的距离
         if (dom.pageX > this.startX) {
           // 往右划
           this.differX = this.defaultX + (dom.pageX - this.startX);
+
+          // 划到底动画计算
           if (this.differX > 0) {
             this.differX = Math.abs(dom.pageX - this.startX) * this.bounce;
-            console.log(this.differX)
           }
         } else {
           // 往左划
           this.differX = this.defaultX + -(this.startX - dom.pageX);
 
+
+          // 划到底动画计算
           if (Math.abs(this.differX) >= this.differWidth) {
             this.differX = this.differX + (Math.abs(this.differX) - this.differWidth) * this.bounce * 8;
-
-
           }
         }
 
@@ -265,8 +277,16 @@
             0 : Math.abs(this.differX) <= this.differWidth ?
                 this.differX : -this.differWidth;
 
+        // console.log(this.differX, -this.moveDistance);
 
-        this.setNavListWrapperTransform(this.differX);
+         this.setNavListWrapperTransform(this.differX);
+      },
+      /**
+       *
+       * @param sVal  初始值
+       * @param tVal  目标值
+       */
+      move(sVal, tVal) {
 
       }
 

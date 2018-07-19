@@ -15,6 +15,7 @@ const test = (resolve) => {
 }
 
 
+
 export default new Router({
   routes: [
     {
@@ -26,6 +27,6 @@ export default new Router({
       path:'/test',
       name:'test',
       component:test
-    }
+    },
   ]
 })

@@ -39,7 +39,6 @@
   import vueSlideNav from '../vue-slide-nav/vue-slide-nav'
   import slidePageWrapper from '../vue-slide-nav/slide-page-wrapper/slide-page-wrapper'
   import slidePageItem from '../vue-slide-nav/slide-page-item/slide-page-item'
-
   export default {
     data() {
       return {
